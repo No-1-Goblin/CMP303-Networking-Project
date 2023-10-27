@@ -39,7 +39,7 @@ int main()
                 delete client;
             }
         }
-        while (client->update(clock.restart().asMilliseconds()));
+        while (client->update(clock.restart().asSeconds()));
     }
     return 0;
 }

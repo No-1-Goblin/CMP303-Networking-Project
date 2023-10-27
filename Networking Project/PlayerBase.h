@@ -9,7 +9,7 @@ public:
     PlayerBase();
     ~PlayerBase();
     void init(sf::Texture*, sf::Texture*, PlayerData);
-    void update(float);
+    virtual void update(float);
     void render(sf::RenderWindow*);
     void setPos(float, float);
     void updatePos();

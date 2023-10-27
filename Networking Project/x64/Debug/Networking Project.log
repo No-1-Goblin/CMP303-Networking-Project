@@ -1,3 +1,12 @@
-﻿  Client.cpp
-C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\Client.cpp(96): warning C4715: 'Client::init': not all control paths return a value
+﻿  PlayerControllable.cpp
+C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\PlayerControllable.cpp(14,65): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\PlayerControllable.cpp(15,65): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
   Networking Project.vcxproj -> C:\Users\harry\Source\Repos\CMP303-Networking-Project\x64\Debug\Networking Project.exe

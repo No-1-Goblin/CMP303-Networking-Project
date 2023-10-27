@@ -136,12 +136,14 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PlayerBase.cpp" />
+    <ClCompile Include="PlayerControllable.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
     <ClInclude Include="PlayerBase.h" />
+    <ClInclude Include="PlayerControllable.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

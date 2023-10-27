@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Utils.h"
 #include "PlayerBase.h"
+#include "PlayerControllable.h"
 
 class Client
 {
@@ -33,6 +34,6 @@ protected:
 	std::vector<PlayerBase*> players;
 	sf::Texture penguinBaseTex;
 	sf::Texture penguinColourTex;
-	PlayerBase player;
+	PlayerControllable player;
 };
 
