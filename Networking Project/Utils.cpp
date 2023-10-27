@@ -28,12 +28,22 @@ sf::Packet& operator >>(sf::Packet& Packet, RequestType& t)
 
 sf::Packet& operator <<(sf::Packet& Packet, const PlayerData& player)
 {
-    return Packet << player.name << player.x << player.y;
+    return Packet << player.name << player.x << player.y << player.colour;
 }
 
 sf::Packet& operator >>(sf::Packet& Packet, PlayerData& player)
 {
-    return Packet >> player.name >> player.x >> player.y;
+    return Packet >> player.name >> player.x >> player.y >> player.colour;
+}
+
+sf::Packet& operator <<(sf::Packet& Packet, const sf::Color& colour)
+{
+    return Packet << colour.r << colour.g << colour.b << colour.a;
+}
+
+sf::Packet& operator >>(sf::Packet& Packet, sf::Color& colour)
+{
+    return Packet >> colour.r >> colour.g >> colour.b >> colour.a;
 }
 
 bool isValidPort(std::string port) {
@@ -61,6 +71,22 @@ bool isValidUsername(std::string username) {
             }
         }
         return true;
+    }
+    return false;
+}
+
+bool isValidColour(std::string colour) {
+    if (colour.length() > 0 && colour.length() < 4) {
+        for (int i = 0; i < colour.size(); i++) {
+            char c = colour.at(i);
+            if (!isdigit(c)) {
+                return false;
+            }
+        }
+        int colourVal = atoi(colour.data());
+        if (colourVal >= 0 && colourVal <= 255) {
+            return true;
+        }
     }
     return false;
 }

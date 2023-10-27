@@ -66,6 +66,8 @@ void Server::handleConnectionQueue() {
 		case sf::Socket::Done:
 			std::string username;
 			packet >> username;
+			sf::Color colour;
+			packet >> colour;
 			sf::Packet returnPacket;
 			sf::TcpSocket* socket = connectionQueue[i];
 			if (isValidUsername(username)) {
@@ -80,10 +82,13 @@ void Server::handleConnectionQueue() {
 					usernames.push_back(username);
 					PlayerData data;
 					data.name = username;
-					data.x = 0;
-					data.y = 0;
+					data.x = 960;
+					data.y = 540;
+					data.colour = colour;
 					playerData.push_back(data);
+					returnPacket << PacketType::USERNAMERESPONSE;
 					returnPacket << true;
+					returnPacket << data;
 					connectionQueue.erase(connectionQueue.begin() + i);
 					i--;
 					std::cout << "Player [" << username << "] joined the server!" << std::endl;

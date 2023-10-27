@@ -13,7 +13,9 @@ public:
 	bool init();
 	bool update(float dt);
 protected:
+	bool windowEvents();
 	void handleIncomingData();
+	void render();
 
 	bool requestPlayerData();
 	void loadPlayerList(sf::Packet);
@@ -23,10 +25,14 @@ protected:
 	sf::IpAddress serverIP;
 	int serverPort;
 	sf::TcpSocket socket;
+	const int SCREEN_WIDTH = 1920;
+	const int SCREEN_HEIGHT = 1080;
 	sf::RenderWindow* window;
 
-	std::string myUsername;
+	PlayerData me;
 	std::vector<PlayerData> players;
+	sf::Texture penguinBaseTex;
+	sf::Texture penguinColourTex;
 	PlayerBase player;
 };
 
