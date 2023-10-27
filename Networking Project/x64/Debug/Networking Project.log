@@ -9,4 +9,10 @@ C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\PlayerC
           [
               T=float
           ]
+  Server.cpp
+C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\Server.cpp(4,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\Server.cpp(85,22): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\Server.cpp(86,22): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\Server.cpp(31): warning C4715: 'Server::init': not all control paths return a value
   Networking Project.vcxproj -> C:\Users\harry\Source\Repos\CMP303-Networking-Project\x64\Debug\Networking Project.exe

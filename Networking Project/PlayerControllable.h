@@ -7,7 +7,9 @@ public:
     PlayerControllable();
     ~PlayerControllable();
     void update(float) override;
+    bool movedThisFrame();
 protected:
     float speed;
+    bool moved;
 };
 

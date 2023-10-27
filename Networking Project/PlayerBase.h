@@ -16,6 +16,7 @@ public:
     void setColour(sf::Color);
     std::string getName();
     sf::Vector2f getPos();
+
 protected:
     sf::RectangleShape penguinBase;
     sf::RectangleShape penguinColour;

@@ -83,7 +83,8 @@ bool Client::init() {
             std::cout << "Username is invalid or already in use" << std::endl;
         }
     }
-    returnPacket >> me;
+    PlayerData myData;
+    returnPacket >> myData;
     socket.setBlocking(false);
     if (!requestPlayerData()) {
         std::cout << "Failed to request player data" << std::endl;
@@ -92,7 +93,7 @@ bool Client::init() {
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Plub Cenguin");
     penguinBaseTex.loadFromFile("graphics/BasePenguin.png");
     penguinColourTex.loadFromFile("graphics/PenguinColour.png");
-    player.init(&penguinBaseTex, &penguinColourTex, me);
+    me.init(&penguinBaseTex, &penguinColourTex, myData);
 }
 
 bool Client::update(float dt) {
@@ -100,7 +101,10 @@ bool Client::update(float dt) {
         return false;
     }
     handleIncomingData();
-    player.update(dt);
+    me.update(dt);
+    if (me.movedThisFrame()) {
+        sendMovementPacket();
+    }
     render();
     return true;
 }
@@ -120,35 +124,42 @@ bool Client::windowEvents() {
 
 void Client::handleIncomingData() {
     sf::Packet packet;
-    sf::Socket::Status status = socket.receive(packet);
-    if (status == sf::Socket::Error || status == sf::Socket::Disconnected) {
-        std::cout << "Disconnected from server" << std::endl;
-        system("Pause");
-        exit(0);
-    }
-    if (status == sf::Socket::Done) {
-        PacketType type;
-        packet >> type;
-        switch (type) {
-        case PacketType::PLAYERLIST:
-            loadPlayerList(packet);
-            break;
-        case PacketType::CONNECTNOTIFICATION:
-            loadNewConnectedPlayer(packet);
-            break;
-        case PacketType::DISCONNECTNOTIFICATION:
-            unloadDisconnectedPlayer(packet);
-            break;
-        case PacketType::USERNAMERESPONSE:
-            break;
+    sf::Socket::Status status;
+    do {
+        packet.clear();
+        status = socket.receive(packet);
+        if (status == sf::Socket::Error || status == sf::Socket::Disconnected) {
+            std::cout << "Disconnected from server" << std::endl;
+            system("Pause");
+            exit(0);
         }
-    }
+        if (status == sf::Socket::Done) {
+            PacketType type;
+            packet >> type;
+            switch (type) {
+            case PacketType::PLAYERLIST:
+                loadPlayerList(packet);
+                break;
+            case PacketType::CONNECTNOTIFICATION:
+                loadNewConnectedPlayer(packet);
+                break;
+            case PacketType::DISCONNECTNOTIFICATION:
+                unloadDisconnectedPlayer(packet);
+                break;
+            case PacketType::USERNAMERESPONSE:
+                break;
+            case PacketType::MOVEMENTDATA:
+                updatePlayerPosition(packet);
+                break;
+            }
+        }
+    } while (status == sf::Socket::Done);
 }
 
 void Client::render() {
     window->clear(sf::Color::White);
     window->setView(sf::View(sf::Vector2f(960, 540), sf::Vector2f(1920, 1080)));
-    player.render(window);
+    me.render(window);
     for (int i = 0; i < players.size(); i++) {
         players[i]->render(window);
     }
@@ -174,7 +185,7 @@ void Client::loadPlayerList(sf::Packet packet) {
     for (int i = 0; i < playerCount; i++) {
         PlayerData player;
         packet >> player;
-        if (player.name != me.name) {
+        if (player.name != me.getName()) {
             PlayerBase* penguin = new PlayerBase();
             penguin->init(&penguinBaseTex, &penguinColourTex, player);
             players.push_back(penguin);
@@ -186,7 +197,7 @@ void Client::loadNewConnectedPlayer(sf::Packet packet) {
     PlayerData player;
     packet >> player;
     std::cout << "Player [" << player.name << "] joined the server!" << std::endl;
-    if (player.name != me.name) {
+    if (player.name != me.getName()) {
         for (int i = 0; i < players.size(); i++) {
             if (players[i]->getName() == player.name) {
                 players.erase(players.begin() + i);
@@ -205,6 +216,32 @@ void Client::unloadDisconnectedPlayer(sf::Packet packet) {
     for (int i = 0; i < players.size(); i++) {
         if (players[i]->getName() == username) {
             players.erase(players.begin() + i);
+        }
+    }
+}
+
+void Client::sendMovementPacket() {
+    sf::Packet packet;
+    MovementData data;
+    sf::Vector2f playerPos = me.getPos();
+    data.name = me.getName();
+    data.x = playerPos.x;
+    data.y = playerPos.y;
+    packet << PacketType::MOVEMENTDATA;
+    packet << data;
+    sf::Socket::Status status;
+    status = socket.send(packet);
+    if (status == sf::Socket::Disconnected || status == sf::Socket::Error) {
+        std::cout << "Failed to send movement data to server, hopefully not problematic" << std::endl;
+    }
+}
+
+void Client::updatePlayerPosition(sf::Packet packet) {
+    MovementData data;
+    packet >> data;
+    for (int i = 0; i < players.size(); i++) {
+        if (players[i]->getName() == data.name) {
+            players[i]->setPos(data.x, data.y);
         }
     }
 }

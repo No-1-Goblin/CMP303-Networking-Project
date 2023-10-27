@@ -46,6 +46,16 @@ sf::Packet& operator >>(sf::Packet& Packet, sf::Color& colour)
     return Packet >> colour.r >> colour.g >> colour.b >> colour.a;
 }
 
+sf::Packet& operator <<(sf::Packet& Packet, const MovementData& data)
+{
+    return Packet << data.name << data.x << data.y;
+}
+
+sf::Packet& operator >>(sf::Packet& Packet, MovementData& data)
+{
+    return Packet >> data.name >> data.x >> data.y;
+}
+
 bool isValidPort(std::string port) {
     if (port.length() < 1) {
         return false;

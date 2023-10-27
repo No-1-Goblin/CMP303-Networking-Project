@@ -15,5 +15,15 @@ void PlayerControllable::update(float dt) {
 	moveDir.y = ((int)sf::Keyboard::isKeyPressed(sf::Keyboard::S)) - ((int)sf::Keyboard::isKeyPressed(sf::Keyboard::W));
 	sf::Vector2f pos = getPos();
 	pos += moveDir * speed * dt;
-	setPos(pos.x, pos.y);
+	if (pos != getPos()) {
+		setPos(pos.x, pos.y);
+		moved = true;
+	}
+	else {
+		moved = false;
+	}
+}
+
+bool PlayerControllable::movedThisFrame() {
+	return moved;
 }

@@ -20,6 +20,7 @@ protected:
 	void broadcastPacket(sf::Packet, std::string);
 	void closeConnection(std::string);
 	void handleRequest(sf::Packet packet, sf::TcpSocket* socket);
+	void handleMovementData(sf::Packet);
 
 	// Networking
 	uint16_t port;

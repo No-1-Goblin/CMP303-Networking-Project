@@ -22,6 +22,8 @@ protected:
 	void loadPlayerList(sf::Packet);
 	void loadNewConnectedPlayer(sf::Packet);
 	void unloadDisconnectedPlayer(sf::Packet);
+	void sendMovementPacket();
+	void updatePlayerPosition(sf::Packet);
 
 	sf::IpAddress serverIP;
 	int serverPort;
@@ -30,10 +32,9 @@ protected:
 	const int SCREEN_HEIGHT = 1080;
 	sf::RenderWindow* window;
 
-	PlayerData me;
 	std::vector<PlayerBase*> players;
 	sf::Texture penguinBaseTex;
 	sf::Texture penguinColourTex;
-	PlayerControllable player;
+	PlayerControllable me;
 };
 

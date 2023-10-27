@@ -9,7 +9,8 @@ enum class PacketType {
 	PLAYERLIST,
 	DISCONNECTNOTIFICATION,
 	CONNECTNOTIFICATION,
-	USERNAMERESPONSE
+	USERNAMERESPONSE,
+	MOVEMENTDATA,
 };
 
 sf::Packet& operator << (sf::Packet& Packet, const PacketType& p);
@@ -35,6 +36,14 @@ sf::Packet& operator >> (sf::Packet& Packet, PlayerData& p);
 sf::Packet& operator << (sf::Packet& Packet, const sf::Color& p);
 sf::Packet& operator >> (sf::Packet& Packet, sf::Color& p);
 
+struct MovementData {
+	std::string name;
+	float x;
+	float y;
+};
+
+sf::Packet& operator << (sf::Packet& Packet, const MovementData& p);
+sf::Packet& operator >> (sf::Packet& Packet, MovementData& p);
 
 bool isValidPort(std::string);
 bool isValidUsername(std::string);

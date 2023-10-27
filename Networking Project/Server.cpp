@@ -104,24 +104,29 @@ void Server::handleConnectionQueue() {
 }
 
 void Server::handleIncomingData() {
+	sf::Socket::Status status;
 	for (int i = 0; i < players.size(); i++) {
-		sf::TcpSocket* socket = players[i].first;
-		std::string username = players[i].second;
-		sf::Packet packet;
-		sf::Socket::Status status = socket->receive(packet);
-		if (status == sf::Socket::Disconnected || status == sf::Socket::Error) {
-			closeConnection(username);
-			break;
-		}
-		if (status == sf::Socket::Done) {
-			PacketType type;
-			packet >> type;
-			switch (type) {
-			case PacketType::REQUEST:
-				handleRequest(packet, socket);
+		do {
+			sf::TcpSocket* socket = players[i].first;
+			std::string username = players[i].second;
+			sf::Packet packet;
+			status = socket->receive(packet);
+			if (status == sf::Socket::Disconnected || status == sf::Socket::Error) {
+				closeConnection(username);
 				break;
 			}
-		}
+			if (status == sf::Socket::Done) {
+				PacketType type;
+				packet >> type;
+				switch (type) {
+				case PacketType::REQUEST:
+					handleRequest(packet, socket);
+					break;
+				case PacketType::MOVEMENTDATA:
+					handleMovementData(packet);
+				}
+			}
+		} while (status == sf::Socket::Done);
 	}
 }
 
@@ -182,5 +187,25 @@ void Server::handleRequest(sf::Packet requestPacket, sf::TcpSocket* socket) {
 	}
 	if (success) {
 		socket->send(outPacket);
+	}
+}
+
+void Server::handleMovementData(sf::Packet packet) {
+	MovementData data;
+	packet >> data;
+	bool validPlayer = false;
+	for (int i = 0; i < playerData.size(); i++) {
+		if (data.name == playerData[i].name) {
+			playerData[i].x = data.x;
+			playerData[i].y = data.y;
+			validPlayer = true;
+			break;
+ 		}
+	}
+	if (validPlayer) {
+		sf::Packet outPacket;
+		outPacket << PacketType::MOVEMENTDATA;
+		outPacket << data;
+		broadcastPacket(outPacket, data.name);
 	}
 }
