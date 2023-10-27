@@ -30,7 +30,7 @@ protected:
 	sf::RenderWindow* window;
 
 	PlayerData me;
-	std::vector<PlayerData> players;
+	std::vector<PlayerBase*> players;
 	sf::Texture penguinBaseTex;
 	sf::Texture penguinColourTex;
 	PlayerBase player;

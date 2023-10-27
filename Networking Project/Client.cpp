@@ -90,8 +90,8 @@ bool Client::init() {
         return false;
     }
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Plub Cenguin");
-    penguinBaseTex.loadFromFile("graphics/test.png");
-    penguinColourTex.loadFromFile("graphics/test.png");
+    penguinBaseTex.loadFromFile("graphics/BasePenguin.png");
+    penguinColourTex.loadFromFile("graphics/PenguinColour.png");
     player.init(&penguinBaseTex, &penguinColourTex, me);
 }
 
@@ -146,9 +146,12 @@ void Client::handleIncomingData() {
 }
 
 void Client::render() {
-    window->clear();
+    window->clear(sf::Color::White);
     window->setView(sf::View(sf::Vector2f(960, 540), sf::Vector2f(1920, 1080)));
     player.render(window);
+    for (int i = 0; i < players.size(); i++) {
+        players[i]->render(window);
+    }
     window->display();
 }
 
@@ -171,7 +174,11 @@ void Client::loadPlayerList(sf::Packet packet) {
     for (int i = 0; i < playerCount; i++) {
         PlayerData player;
         packet >> player;
-        std::cout << "Player [" << player.name << "] at x=" << player.x << ", y=" << player.y << std::endl;
+        if (player.name != me.name) {
+            PlayerBase* penguin = new PlayerBase();
+            penguin->init(&penguinBaseTex, &penguinColourTex, player);
+            players.push_back(penguin);
+        }
     }
 }
 
@@ -181,11 +188,13 @@ void Client::loadNewConnectedPlayer(sf::Packet packet) {
     std::cout << "Player [" << player.name << "] joined the server!" << std::endl;
     if (player.name != me.name) {
         for (int i = 0; i < players.size(); i++) {
-            if (players[i].name == player.name) {
+            if (players[i]->getName() == player.name) {
                 players.erase(players.begin() + i);
             }
         }
-        players.push_back(player);
+        PlayerBase* penguin = new PlayerBase();
+        penguin->init(&penguinBaseTex, &penguinColourTex, player);
+        players.push_back(penguin);
     }
 }
 
@@ -194,7 +203,7 @@ void Client::unloadDisconnectedPlayer(sf::Packet packet) {
     packet >> username;
     std::cout << "Player [" << username << "] left the server!" << std::endl;
     for (int i = 0; i < players.size(); i++) {
-        if (players[i].name == username) {
+        if (players[i]->getName() == username) {
             players.erase(players.begin() + i);
         }
     }

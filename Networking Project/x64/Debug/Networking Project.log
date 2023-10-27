@@ -1,2 +1,3 @@
-﻿  PlayerBase.cpp
-  Networking Project.vcxproj -> C:\Users\2003529\source\repos\CMP303-Networking-Project\x64\Debug\Networking Project.exe
+﻿  Client.cpp
+C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\Client.cpp(96): warning C4715: 'Client::init': not all control paths return a value
+  Networking Project.vcxproj -> C:\Users\harry\Source\Repos\CMP303-Networking-Project\x64\Debug\Networking Project.exe

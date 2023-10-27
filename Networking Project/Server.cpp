@@ -1,7 +1,7 @@
 #include "Server.h"
 
 Server::Server() {
-	
+	srand(time(0));
 }
 
 Server::~Server() {
@@ -82,8 +82,8 @@ void Server::handleConnectionQueue() {
 					usernames.push_back(username);
 					PlayerData data;
 					data.name = username;
-					data.x = 960;
-					data.y = 540;
+					data.x = rand() % 1920;
+					data.y = rand() % 1080;
 					data.colour = colour;
 					playerData.push_back(data);
 					returnPacket << PacketType::USERNAMERESPONSE;
@@ -94,7 +94,7 @@ void Server::handleConnectionQueue() {
 					std::cout << "Player [" << username << "] joined the server!" << std::endl;
 					sf::Packet connectNotifyPacket;
 					connectNotifyPacket << PacketType::CONNECTNOTIFICATION;
-					connectNotifyPacket << username;
+					connectNotifyPacket << data;
 					broadcastPacket(connectNotifyPacket, username);
 				}
 			}
