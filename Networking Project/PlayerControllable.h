@@ -6,7 +6,7 @@ class PlayerControllable :
 public:
     PlayerControllable();
     ~PlayerControllable();
-    void update(float) override;
+    void update(float, bool);
     bool movedThisFrame();
 protected:
     float speed;

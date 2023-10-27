@@ -8,19 +8,21 @@ PlayerControllable::~PlayerControllable() {
 
 }
 
-void PlayerControllable::update(float dt) {
+void PlayerControllable::update(float dt, bool isFocused) {
 	PlayerBase::update(dt);
-	sf::Vector2f moveDir;
-	moveDir.x = ((int)sf::Keyboard::isKeyPressed(sf::Keyboard::D)) - ((int)sf::Keyboard::isKeyPressed(sf::Keyboard::A));
-	moveDir.y = ((int)sf::Keyboard::isKeyPressed(sf::Keyboard::S)) - ((int)sf::Keyboard::isKeyPressed(sf::Keyboard::W));
-	sf::Vector2f pos = getPos();
-	pos += moveDir * speed * dt;
-	if (pos != getPos()) {
-		setPos(pos.x, pos.y);
-		moved = true;
-	}
-	else {
-		moved = false;
+	if (isFocused) {
+		sf::Vector2f moveDir;
+		moveDir.x = ((int)sf::Keyboard::isKeyPressed(sf::Keyboard::D)) - ((int)sf::Keyboard::isKeyPressed(sf::Keyboard::A));
+		moveDir.y = ((int)sf::Keyboard::isKeyPressed(sf::Keyboard::S)) - ((int)sf::Keyboard::isKeyPressed(sf::Keyboard::W));
+		sf::Vector2f pos = getPos();
+		pos += moveDir * speed * dt;
+		if (pos != getPos()) {
+			setPos(pos.x, pos.y);
+			moved = true;
+		}
+		else {
+			moved = false;
+		}
 	}
 }
 

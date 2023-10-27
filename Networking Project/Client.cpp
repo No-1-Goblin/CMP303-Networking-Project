@@ -1,6 +1,7 @@
 #include "Client.h"
 
 Client::Client() {
+    isFocused = true;
 }
 
 Client::~Client() {
@@ -94,6 +95,7 @@ bool Client::init() {
     penguinBaseTex.loadFromFile("graphics/BasePenguin.png");
     penguinColourTex.loadFromFile("graphics/PenguinColour.png");
     me.init(&penguinBaseTex, &penguinColourTex, myData);
+    return true;
 }
 
 bool Client::update(float dt) {
@@ -101,7 +103,7 @@ bool Client::update(float dt) {
         return false;
     }
     handleIncomingData();
-    me.update(dt);
+    me.update(dt, isFocused);
     if (me.movedThisFrame()) {
         sendMovementPacket();
     }
@@ -113,8 +115,17 @@ bool Client::windowEvents() {
     sf::Event event;
     while (window->pollEvent(event))
     {
-        if (event.type == sf::Event::Closed)
+        switch (event.type) {
+        case sf::Event::Closed:
             window->close();
+            break;
+        case sf::Event::GainedFocus:
+            isFocused = true;
+            break;
+        case sf::Event::LostFocus:
+            isFocused = false;
+            break;
+        }
     }
     if (!window->isOpen()) {
         return false;

@@ -28,6 +28,7 @@ bool Server::init() {
 	}
 	port = listenerSocket.getLocalPort();
 	std::cout << "Successfully opened listener socket on port " << port << std::endl;
+	return true;
 }
 
 void Server::tick(float dt) {
