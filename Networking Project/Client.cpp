@@ -92,6 +92,7 @@ bool Client::init() {
         return false;
     }
     window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Plub Cenguin");
+    window->setFramerateLimit(60);
     penguinBaseTex.loadFromFile("graphics/BasePenguin.png");
     penguinColourTex.loadFromFile("graphics/PenguinColour.png");
     me.init(&penguinBaseTex, &penguinColourTex, myData);
@@ -118,6 +119,7 @@ bool Client::windowEvents() {
         switch (event.type) {
         case sf::Event::Closed:
             window->close();
+            exit(0);
             break;
         case sf::Event::GainedFocus:
             isFocused = true;
