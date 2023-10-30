@@ -3,7 +3,7 @@
 #include "SFML/Network.hpp"
 #include <iostream>
 #include "Utils.h"
-#include "PlayerBase.h"
+#include "NetworkPlayer.h"
 #include "PlayerControllable.h"
 
 class Client
@@ -33,7 +33,7 @@ protected:
 	sf::RenderWindow* window;
 	bool isFocused;
 
-	std::vector<PlayerBase*> players;
+	std::vector<NetworkPlayer*> players;
 	sf::Texture penguinBaseTex;
 	sf::Texture penguinColourTex;
 	PlayerControllable me;

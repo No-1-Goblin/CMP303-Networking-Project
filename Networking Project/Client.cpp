@@ -199,7 +199,7 @@ void Client::loadPlayerList(sf::Packet packet) {
         PlayerData player;
         packet >> player;
         if (player.name != me.getName()) {
-            PlayerBase* penguin = new PlayerBase();
+            NetworkPlayer* penguin = new NetworkPlayer();
             penguin->init(&penguinBaseTex, &penguinColourTex, player);
             players.push_back(penguin);
         }
@@ -216,7 +216,7 @@ void Client::loadNewConnectedPlayer(sf::Packet packet) {
                 players.erase(players.begin() + i);
             }
         }
-        PlayerBase* penguin = new PlayerBase();
+        NetworkPlayer* penguin = new NetworkPlayer();
         penguin->init(&penguinBaseTex, &penguinColourTex, player);
         players.push_back(penguin);
     }

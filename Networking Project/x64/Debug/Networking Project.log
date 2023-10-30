@@ -1,5 +1,6 @@
 ﻿  Client.cpp
   Main.cpp
-C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\Main.cpp(28,56): warning C4244: 'argument': conversion from 'sf::Int32' to 'float', possible loss of data
+C:\Users\admin\source\repos\CMP303-Networking-Project\Networking Project\Main.cpp(28,56): warning C4244: 'argument': conversion from 'sf::Int32' to 'float', possible loss of data
+  NetworkPlayer.cpp
   Generating Code...
-  Networking Project.vcxproj -> C:\Users\harry\source\repos\CMP303-Networking-Project\x64\Debug\Networking Project.exe
+  Networking Project.vcxproj -> C:\Users\admin\Source\Repos\CMP303-Networking-Project\x64\Debug\Networking Project.exe
