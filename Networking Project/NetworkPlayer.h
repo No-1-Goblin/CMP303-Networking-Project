@@ -6,6 +6,7 @@ class NetworkPlayer :
 public:
     NetworkPlayer();
     ~NetworkPlayer();
+    void init(sf::Texture*, sf::Texture*, PlayerData);
     void update(float) override;
     void setLatestData(MovementData);
 protected:

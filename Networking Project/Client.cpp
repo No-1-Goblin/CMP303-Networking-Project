@@ -106,6 +106,9 @@ bool Client::update(float dt) {
     handleIncomingData();
     me.update(dt, isFocused);
     if (me.movedThisFrame()) {
+        if (rand() % 10 == 0) {
+            sf::sleep(sf::Time(sf::milliseconds(100)));
+        }
         sendMovementPacket();
     }
     for (int i = 0; i < players.size(); i++) {

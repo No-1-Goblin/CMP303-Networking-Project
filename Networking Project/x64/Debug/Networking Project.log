@@ -1,2 +1,4 @@
-﻿  Client.cpp
+﻿  NetworkPlayer.cpp
+C:\Users\admin\source\repos\CMP303-Networking-Project\Networking Project\NetworkPlayer.cpp(28,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\admin\source\repos\CMP303-Networking-Project\Networking Project\NetworkPlayer.cpp(50,12): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Networking Project.vcxproj -> C:\Users\admin\Source\Repos\CMP303-Networking-Project\x64\Debug\Networking Project.exe
