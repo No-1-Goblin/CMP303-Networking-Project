@@ -9,7 +9,7 @@ public:
     void update(float, bool);
     bool movedThisFrame();
 protected:
-    float speed;
     bool moved;
+    bool stopped;
 };
 

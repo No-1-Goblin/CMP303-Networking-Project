@@ -18,6 +18,7 @@ public:
     sf::Vector2f getPos();
 
 protected:
+    float speed;
     sf::RectangleShape penguinBase;
     sf::RectangleShape penguinColour;
     sf::Text usernameText;

@@ -1,7 +1,6 @@
 #include "PlayerControllable.h"
 
 PlayerControllable::PlayerControllable() {
-	speed = 100;
 }
 
 PlayerControllable::~PlayerControllable() {
@@ -18,6 +17,12 @@ void PlayerControllable::update(float dt, bool isFocused) {
 		pos += moveDir * speed * dt;
 		if (pos != getPos()) {
 			setPos(pos.x, pos.y);
+			moved = true;
+			stopped = false;
+		}
+		else if (!stopped) {
+			// Intentionally send 1 duplicate packet to signal a stop
+			stopped = true;
 			moved = true;
 		}
 		else {

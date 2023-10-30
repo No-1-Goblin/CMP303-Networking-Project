@@ -108,6 +108,9 @@ bool Client::update(float dt) {
     if (me.movedThisFrame()) {
         sendMovementPacket();
     }
+    for (int i = 0; i < players.size(); i++) {
+        players[i]->update(dt);
+    }
     render();
     return true;
 }
@@ -254,7 +257,8 @@ void Client::updatePlayerPosition(sf::Packet packet) {
     packet >> data;
     for (int i = 0; i < players.size(); i++) {
         if (players[i]->getName() == data.name) {
-            players[i]->setPos(data.x, data.y);
+            players[i]->setLatestData(data);
+            std::cout << "Received movement data for player " << data.name << ". Pos x = " << data.x << " y = " << data.y << std::endl;
         }
     }
 }

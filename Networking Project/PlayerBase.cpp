@@ -1,6 +1,7 @@
 #include "PlayerBase.h"
 
 PlayerBase::PlayerBase() {
+	speed = 100;
 	penguinBase.setSize(sf::Vector2f(100, 120));
 	penguinBase.setOrigin(penguinBase.getSize() * 0.5f);
 	penguinColour.setSize(sf::Vector2f(100, 120));
