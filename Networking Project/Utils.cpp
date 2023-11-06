@@ -56,6 +56,16 @@ sf::Packet& operator >>(sf::Packet& Packet, MovementData& data)
     return Packet >> data.name >> data.x >> data.y;
 }
 
+sf::Packet& operator <<(sf::Packet& Packet, const ChatMessageData& data)
+{
+    return Packet << data.sender << data.message;
+}
+
+sf::Packet& operator >>(sf::Packet& Packet, ChatMessageData& data)
+{
+    return Packet >> data.sender >> data.message;
+}
+
 bool isValidPort(std::string port) {
     if (port.length() < 1) {
         return false;

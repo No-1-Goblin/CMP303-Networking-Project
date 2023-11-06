@@ -11,6 +11,7 @@ enum class PacketType {
 	CONNECTNOTIFICATION,
 	USERNAMERESPONSE,
 	MOVEMENTDATA,
+	CHATMESSAGE
 };
 
 sf::Packet& operator << (sf::Packet& Packet, const PacketType& p);
@@ -44,6 +45,14 @@ struct MovementData {
 
 sf::Packet& operator << (sf::Packet& Packet, const MovementData& p);
 sf::Packet& operator >> (sf::Packet& Packet, MovementData& p);
+
+struct ChatMessageData {
+	std::string sender;
+	std::string message;
+};
+
+sf::Packet& operator << (sf::Packet& Packet, const ChatMessageData& p);
+sf::Packet& operator >> (sf::Packet& Packet, ChatMessageData& p);
 
 bool isValidPort(std::string);
 bool isValidUsername(std::string);
