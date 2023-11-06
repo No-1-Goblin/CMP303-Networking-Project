@@ -49,6 +49,7 @@ sf::Packet& operator >> (sf::Packet& Packet, MovementData& p);
 struct ChatMessageData {
 	std::string sender;
 	std::string message;
+	sf::Color colour;
 };
 
 sf::Packet& operator << (sf::Packet& Packet, const ChatMessageData& p);

@@ -96,6 +96,7 @@ bool Client::init() {
     penguinBaseTex.loadFromFile("graphics/BasePenguin.png");
     penguinColourTex.loadFromFile("graphics/PenguinColour.png");
     me.init(&penguinBaseTex, &penguinColourTex, myData);
+    chat.setKeyboard(&keyboard);
     return true;
 }
 
@@ -111,6 +112,8 @@ bool Client::update(float dt) {
     for (int i = 0; i < players.size(); i++) {
         players[i]->update(dt);
     }
+    chat.update(dt);
+    keyboard.update();
     render();
     return true;
 }
@@ -129,6 +132,12 @@ bool Client::windowEvents() {
             break;
         case sf::Event::LostFocus:
             isFocused = false;
+            break;
+        case sf::Event::KeyPressed:
+            keyboard.setKeyDown(event.key.code);
+            break;
+        case sf::Event::KeyReleased:
+            keyboard.setKeyUp(event.key.code);
             break;
         }
     }
@@ -167,6 +176,8 @@ void Client::handleIncomingData() {
             case PacketType::MOVEMENTDATA:
                 updatePlayerPosition(packet);
                 break;
+            case PacketType::CHATMESSAGE:
+                printChatMessage(packet);
             }
         }
     } while (status == sf::Socket::Done);
@@ -179,6 +190,7 @@ void Client::render() {
     for (int i = 0; i < players.size(); i++) {
         players[i]->render(window);
     }
+    chat.render(window);
     window->display();
 }
 
@@ -261,4 +273,10 @@ void Client::updatePlayerPosition(sf::Packet packet) {
             std::cout << "Received movement data for player " << data.name << ". Pos x = " << data.x << " y = " << data.y << std::endl;
         }
     }
+}
+
+void Client::printChatMessage(sf::Packet packet) {
+    ChatMessageData data;
+    packet >> data;
+    chat.addMessage(data);
 }

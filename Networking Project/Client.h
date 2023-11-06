@@ -5,6 +5,8 @@
 #include "Utils.h"
 #include "NetworkPlayer.h"
 #include "PlayerControllable.h"
+#include "ChatWindow.h"
+#include "Keyboard.h"
 
 class Client
 {
@@ -17,13 +19,13 @@ protected:
 	bool windowEvents();
 	void handleIncomingData();
 	void render();
-
 	bool requestPlayerData();
 	void loadPlayerList(sf::Packet);
 	void loadNewConnectedPlayer(sf::Packet);
 	void unloadDisconnectedPlayer(sf::Packet);
 	void sendMovementPacket();
 	void updatePlayerPosition(sf::Packet);
+	void printChatMessage(sf::Packet);
 
 	sf::IpAddress serverIP;
 	int serverPort;
@@ -37,5 +39,7 @@ protected:
 	sf::Texture penguinBaseTex;
 	sf::Texture penguinColourTex;
 	PlayerControllable me;
+	ChatWindow chat;
+	Keyboard keyboard;
 };
 

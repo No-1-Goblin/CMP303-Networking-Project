@@ -133,7 +133,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ChatWindow.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NetworkPlayer.cpp" />
     <ClCompile Include="PlayerBase.cpp" />
@@ -142,7 +144,9 @@
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ChatWindow.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="NetworkPlayer.h" />
     <ClInclude Include="PlayerBase.h" />
     <ClInclude Include="PlayerControllable.h" />
