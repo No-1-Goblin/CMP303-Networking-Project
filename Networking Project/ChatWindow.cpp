@@ -2,6 +2,7 @@
 
 ChatWindow::ChatWindow() {
 	font.loadFromFile("font/arial.ttf");
+	isChatting = false;
 	for (int i = 0; i < 16; i++) {
 		sf::Text* message = new sf::Text();
 		message->setFont(font);
@@ -10,10 +11,14 @@ ChatWindow::ChatWindow() {
 		message->setFillColor(sf::Color::Black);
 		messages.push_back(message);
 	}
-	updatePositions();
+	ChatMessageData msg;
+	msg.sender = "SERVER";
+	msg.colour = sf::Color::White;
+	msg.message = "Welcome to the server!";
+	addMessage(msg);
 	background.setFillColor(sf::Color(0, 0, 0, 100));
-	background.setSize(sf::Vector2f(520, 280));
-	myMessage = "";
+	background.setSize(sf::Vector2f(640, 280));
+	myMessage = "Press 'T' to chat";
 	myMessageText.setFont(font);
 	myMessageText.setCharacterSize(14);
 	myMessageText.setString(myMessage);
@@ -59,41 +64,78 @@ ChatWindow::~ChatWindow() {
 
 }
 
-void ChatWindow::update(float dt) {
-	bool isShiftDown = (keyboard->isKeyDown(sf::Keyboard::LShift) || keyboard->isKeyDown(sf::Keyboard::RShift));
-	if (keyboard->isKeyPressed(sf::Keyboard::Space)) {
-		myMessage += " ";
-	}
-	for (int i = 0; i < 26; i++) {
-		int shift = 0;
-		if (keyboard->isKeyPressed(i)) {
-			if (isShiftDown) {
-				shift = 32;
-			}
-			myMessage += char(97 + i - shift);
+ChatMessageData* ChatWindow::update(float dt) {
+	ChatMessageData* returnVal = nullptr;
+	if (isChatting) {
+		bool isShiftDown = (keyboard->isKeyDown(sf::Keyboard::LShift) || keyboard->isKeyDown(sf::Keyboard::RShift));
+		if (keyboard->isKeyPressed(sf::Keyboard::Space)) {
+			myMessage += char(32);
 		}
-	}
-	for (int i = 0; i < 10; i++) {
-		if (keyboard->isKeyPressed(i + sf::Keyboard::Num0) || keyboard->isKeyPressed(i + sf::Keyboard::Numpad0)) {
-			if (!isShiftDown) {
-				myMessage += char(48 + i);
-			}
-			else {
-				myMessage += char(shiftSymbols[i]);
-			}
+		if (keyboard->isKeyPressed(sf::Keyboard::Enter)) {
+			returnVal = new ChatMessageData();
+			returnVal->message = myMessage;
+			returnVal->colour = myMessageText.getFillColor();
+			returnVal->sender = myName;
+			myMessage = "Press 'T' to chat";
+			isChatting = false;
 		}
-	}
-	for (int i = 0; i <= 11; i++) {
-		if (keyboard->isKeyPressed(sf::Keyboard::LBracket + i)) {
-			if (!isShiftDown) {
-				myMessage += char(symbols[i]);
-			}
-			else {
-				myMessage += char(shiftSymbols[i + 10]);
+		if (keyboard->isKeyPressed(sf::Keyboard::Escape)) {
+			myMessage = "Press 'T' to chat";
+			isChatting = false;
+			return returnVal;
+		}
+		if (keyboard->isKeyPressed(sf::Keyboard::Backspace)) {
+			if (myMessage.size() > 0) {
+				myMessage.erase(myMessage.begin() + myMessage.size() - 1);
 			}
 		}
+		for (int i = 0; i < 26; i++) {
+			int shift = 0;
+			if (keyboard->isKeyPressed(i)) {
+				if (isShiftDown) {
+					shift = 32;
+				}
+				myMessage += char(97 + i - shift);
+			}
+		}
+		for (int i = 0; i < 10; i++) {
+			if (keyboard->isKeyPressed(i + sf::Keyboard::Num0) || keyboard->isKeyPressed(i + sf::Keyboard::Numpad0)) {
+				if (!isShiftDown) {
+					myMessage += char(48 + i);
+				}
+				else {
+					myMessage += char(shiftSymbols[i]);
+				}
+			}
+		}
+		for (int i = 0; i <= 11; i++) {
+			if (keyboard->isKeyPressed(sf::Keyboard::LBracket + i)) {
+				if (!isShiftDown) {
+					myMessage += char(symbols[i]);
+				}
+				else {
+					myMessage += char(shiftSymbols[i + 10]);
+				}
+			}
+		}
+		// Putting a space at the end of a string does funky things for whatever reason
+		if (myMessage.size() >= 2) {
+			if (myMessage.at(myMessage.size() - 1) < 32) {
+				myMessage.erase(myMessage.begin() + (myMessage.size() - 1));
+			}
+		}
+		while (myMessage.size() > 64) {
+			myMessage.erase(myMessage.begin() + 64);
+		}
+		myMessageText.setString(myMessage);
 	}
-	myMessageText.setString(myMessage);
+	else {
+		if (keyboard->isKeyPressed(sf::Keyboard::T)) {
+			isChatting = true;
+			myMessage = "";
+		}
+	}
+	return returnVal;
 }
 
 void ChatWindow::render(sf::RenderWindow* window) {
@@ -117,8 +159,17 @@ void ChatWindow::setKeyboard(Keyboard* ptr) {
 	keyboard = ptr;
 }
 
+void ChatWindow::setPlayerData(PlayerData data) {
+	myMessageText.setFillColor(data.colour);
+	myName = data.name;
+}
+
 void ChatWindow::updatePositions() {
 	for (int i = 0; i < messages.size(); i++) {
 		messages[i]->setPosition(4, 4 + i * 16);
 	}
+}
+
+bool ChatWindow::isChatFocused() {
+	return isChatting;
 }

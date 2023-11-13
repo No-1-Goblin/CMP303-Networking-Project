@@ -16,6 +16,7 @@ public:
     void setColour(sf::Color);
     std::string getName();
     sf::Vector2f getPos();
+    sf::Color getColour();
 
 protected:
     float speed;

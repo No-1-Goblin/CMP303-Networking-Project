@@ -97,6 +97,7 @@ bool Client::init() {
     penguinColourTex.loadFromFile("graphics/PenguinColour.png");
     me.init(&penguinBaseTex, &penguinColourTex, myData);
     chat.setKeyboard(&keyboard);
+    chat.setPlayerData(myData);
     return true;
 }
 
@@ -105,14 +106,19 @@ bool Client::update(float dt) {
         return false;
     }
     handleIncomingData();
-    me.update(dt, isFocused);
-    if (me.movedThisFrame()) {
-        sendMovementPacket();
+    if (!chat.isChatFocused()) {
+        me.update(dt, isFocused);
+        if (me.movedThisFrame()) {
+            sendMovementPacket();
+        }
     }
     for (int i = 0; i < players.size(); i++) {
         players[i]->update(dt);
     }
-    chat.update(dt);
+    ChatMessageData* msg = chat.update(dt);
+    if (msg) {
+        sendMessage(*msg);
+    }
     keyboard.update();
     render();
     return true;
@@ -234,6 +240,11 @@ void Client::loadNewConnectedPlayer(sf::Packet packet) {
         NetworkPlayer* penguin = new NetworkPlayer();
         penguin->init(&penguinBaseTex, &penguinColourTex, player);
         players.push_back(penguin);
+        ChatMessageData msg;
+        msg.sender = "SERVER";
+        msg.colour = sf::Color::White;
+        msg.message = "Player [" + player.name + "] joined the server!";
+        chat.addMessage(msg);
     }
 }
 
@@ -243,6 +254,11 @@ void Client::unloadDisconnectedPlayer(sf::Packet packet) {
     std::cout << "Player [" << username << "] left the server!" << std::endl;
     for (int i = 0; i < players.size(); i++) {
         if (players[i]->getName() == username) {
+            ChatMessageData msg;
+            msg.sender = "SERVER";
+            msg.colour = sf::Color::White;
+            msg.message = "Player [" + username + "] left the server!";
+            chat.addMessage(msg);
             players.erase(players.begin() + i);
         }
     }
@@ -279,4 +295,14 @@ void Client::printChatMessage(sf::Packet packet) {
     ChatMessageData data;
     packet >> data;
     chat.addMessage(data);
+}
+
+void Client::sendMessage(ChatMessageData msg) {
+    sf::Packet packet;
+    packet << PacketType::CHATMESSAGE;
+    packet << msg;
+    sf::Socket::Status status = socket.send(packet);
+    if (status == sf::Socket::Disconnected || status == sf::Socket::Error) {
+        std::cout << "Failed to send chat message" << std::endl;
+    }
 }

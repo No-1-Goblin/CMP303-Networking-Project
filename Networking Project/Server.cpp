@@ -35,17 +35,6 @@ void Server::tick(float dt) {
 	handleNewConnections();
 	handleConnectionQueue();
 	handleIncomingData();
-	if (rand() % 10000 == 0) {
-	sf::Packet packet;
-	ChatMessageData msg;
-	msg.sender = "SERVER";
-	std::string message = "Test message " + std::to_string(rand() % 100);
-	msg.message = message;
-	msg.colour = sf::Color(rand() % 255, rand() % 255, rand() % 255);
-	packet << PacketType::CHATMESSAGE;
-	packet << msg;
-	broadcastPacket(packet);
-	}
 }
 
 void Server::handleNewConnections() {
@@ -136,6 +125,10 @@ void Server::handleIncomingData() {
 					break;
 				case PacketType::MOVEMENTDATA:
 					handleMovementData(packet);
+					break;
+				case PacketType::CHATMESSAGE:
+					broadcastPacket(packet);
+					break;
 				}
 			}
 		} while (status == sf::Socket::Done);

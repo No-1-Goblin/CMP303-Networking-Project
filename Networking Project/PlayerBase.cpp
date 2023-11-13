@@ -59,3 +59,7 @@ std::string PlayerBase::getName() {
 sf::Vector2f PlayerBase::getPos() {
 	return sf::Vector2f(data.x, data.y);
 }
+
+sf::Color PlayerBase::getColour() {
+	return data.colour;
+}

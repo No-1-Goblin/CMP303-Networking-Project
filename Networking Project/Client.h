@@ -26,6 +26,7 @@ protected:
 	void sendMovementPacket();
 	void updatePlayerPosition(sf::Packet);
 	void printChatMessage(sf::Packet);
+	void sendMessage(ChatMessageData);
 
 	sf::IpAddress serverIP;
 	int serverPort;
