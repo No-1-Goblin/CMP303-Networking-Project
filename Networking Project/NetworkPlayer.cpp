@@ -15,6 +15,7 @@ void NetworkPlayer::init(sf::Texture* penguinBaseTex, sf::Texture* penguinColour
 	temp.name = playerData.name;
 	temp.x = playerData.x;
 	temp.y = playerData.y;
+	temp.moving = false;
 	latest = temp;
 	setLatestData(temp);
 }
@@ -40,12 +41,7 @@ void NetworkPlayer::update(float dt) {
 void NetworkPlayer::setLatestData(MovementData newData) {
 	prev = latest;
 	latest = newData;
-	if (prev.x == latest.x && prev.y == latest.y) {
-		moving = false;
-	}
-	else {
-		moving = true;
-	}
+	moving = newData.moving;
 	moveVec = sf::Vector2f(latest.x - data.x, latest.y - data.y);
 	float len = sqrt(pow(moveVec.x, 2) + pow(moveVec.y, 2));
 	moveVec *= (1 / len);

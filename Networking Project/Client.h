@@ -23,7 +23,7 @@ protected:
 	void loadPlayerList(sf::Packet);
 	void loadNewConnectedPlayer(sf::Packet);
 	void unloadDisconnectedPlayer(sf::Packet);
-	void sendMovementPacket();
+	void sendMovementPacket(bool);
 	void updatePlayerPosition(sf::Packet);
 	void printChatMessage(sf::Packet);
 	void sendMessage(ChatMessageData);
@@ -35,6 +35,7 @@ protected:
 	const int SCREEN_HEIGHT = 1080;
 	sf::RenderWindow* window;
 	bool isFocused;
+	float movePacketCooldown = 0;
 
 	std::vector<NetworkPlayer*> players;
 	sf::Texture penguinBaseTex;

@@ -41,6 +41,7 @@ struct MovementData {
 	std::string name;
 	float x;
 	float y;
+	bool moving;
 };
 
 sf::Packet& operator << (sf::Packet& Packet, const MovementData& p);

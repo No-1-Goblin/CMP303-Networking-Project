@@ -108,8 +108,14 @@ bool Client::update(float dt) {
     handleIncomingData();
     if (!chat.isChatFocused()) {
         me.update(dt, isFocused);
-        if (me.movedThisFrame()) {
-            sendMovementPacket();
+        movePacketCooldown -= dt;
+        if (me.movedThisFrame() && movePacketCooldown <= 0) {
+            sendMovementPacket(true);
+            movePacketCooldown = 0.05;
+        }
+        else if (me.stoppedThisFrame()) {
+            sendMovementPacket(false);
+            movePacketCooldown = 0;
         }
     }
     for (int i = 0; i < players.size(); i++) {
@@ -264,13 +270,14 @@ void Client::unloadDisconnectedPlayer(sf::Packet packet) {
     }
 }
 
-void Client::sendMovementPacket() {
+void Client::sendMovementPacket(bool moving) {
     sf::Packet packet;
     MovementData data;
     sf::Vector2f playerPos = me.getPos();
     data.name = me.getName();
     data.x = playerPos.x;
     data.y = playerPos.y;
+    data.moving = moving;
     packet << PacketType::MOVEMENTDATA;
     packet << data;
     sf::Socket::Status status;
@@ -286,7 +293,7 @@ void Client::updatePlayerPosition(sf::Packet packet) {
     for (int i = 0; i < players.size(); i++) {
         if (players[i]->getName() == data.name) {
             players[i]->setLatestData(data);
-            std::cout << "Received movement data for player " << data.name << ". Pos x = " << data.x << " y = " << data.y << std::endl;
+            //std::cout << "Received movement data for player " << data.name << ". Pos x = " << data.x << " y = " << data.y << ", moving = " << data.moving << std::endl;
         }
     }
 }

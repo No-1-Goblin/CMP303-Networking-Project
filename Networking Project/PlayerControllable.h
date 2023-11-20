@@ -8,6 +8,7 @@ public:
     ~PlayerControllable();
     void update(float, bool);
     bool movedThisFrame();
+    bool stoppedThisFrame();
 protected:
     bool moved;
     bool stopped;

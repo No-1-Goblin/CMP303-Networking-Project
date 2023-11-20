@@ -1,6 +1,8 @@
 #include "PlayerControllable.h"
 
 PlayerControllable::PlayerControllable() {
+	stopped = false;
+	moved = false;
 }
 
 PlayerControllable::~PlayerControllable() {
@@ -21,7 +23,6 @@ void PlayerControllable::update(float dt, bool isFocused) {
 			stopped = false;
 		}
 		else if (!stopped) {
-			// Intentionally send 1 duplicate packet to signal a stop
 			stopped = true;
 			moved = true;
 		}
@@ -29,8 +30,16 @@ void PlayerControllable::update(float dt, bool isFocused) {
 			moved = false;
 		}
 	}
+	else {
+		moved = false;
+		stopped = true;
+	}
 }
 
 bool PlayerControllable::movedThisFrame() {
-	return moved;
+	return moved && !stopped;
+}
+
+bool PlayerControllable::stoppedThisFrame() {
+	return moved && stopped;
 }

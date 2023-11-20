@@ -48,12 +48,12 @@ sf::Packet& operator >>(sf::Packet& Packet, sf::Color& colour)
 
 sf::Packet& operator <<(sf::Packet& Packet, const MovementData& data)
 {
-    return Packet << data.name << data.x << data.y;
+    return Packet << data.name << data.x << data.y << data.moving;
 }
 
 sf::Packet& operator >>(sf::Packet& Packet, MovementData& data)
 {
-    return Packet >> data.name >> data.x >> data.y;
+    return Packet >> data.name >> data.x >> data.y >> data.moving;
 }
 
 sf::Packet& operator <<(sf::Packet& Packet, const ChatMessageData& data)
