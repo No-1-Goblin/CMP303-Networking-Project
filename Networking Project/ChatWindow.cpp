@@ -124,10 +124,11 @@ ChatMessageData* ChatWindow::update(float dt) {
 				myMessage.erase(myMessage.begin() + (myMessage.size() - 1));
 			}
 		}
-		while (myMessage.size() > 64) {
-			myMessage.erase(myMessage.begin() + 64);
-		}
 		myMessageText.setString(myMessage);
+		while (myMessageText.getLocalBounds().width > 460) {
+			myMessage.erase(myMessage.begin() + (myMessage.size()-1));
+			myMessageText.setString(myMessage);
+		}
 	}
 	else {
 		if (keyboard->isKeyPressed(sf::Keyboard::T)) {
