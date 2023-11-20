@@ -26,6 +26,7 @@ protected:
 	uint16_t port;
 	sf::TcpListener listenerSocket;
 	std::vector<sf::TcpSocket*> connectionQueue;
+	sf::SocketSelector selector;
 
 	// Player data
 	std::vector<std::string> usernames;

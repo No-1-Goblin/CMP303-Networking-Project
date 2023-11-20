@@ -1,3 +1,1 @@
-﻿  ChatWindow.cpp
-C:\Users\admin\source\repos\CMP303-Networking-Project\Networking Project\ChatWindow.cpp(170,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Networking Project.vcxproj -> C:\Users\admin\Source\Repos\CMP303-Networking-Project\x64\Debug\Networking Project.exe
+﻿  Networking Project.vcxproj -> C:\Users\admin\Source\Repos\CMP303-Networking-Project\x64\Debug\Networking Project.exe

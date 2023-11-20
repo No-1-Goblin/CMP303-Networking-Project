@@ -28,13 +28,20 @@ bool Server::init() {
 	}
 	port = listenerSocket.getLocalPort();
 	std::cout << "Successfully opened listener socket on port " << port << std::endl;
+	selector.add(listenerSocket);
 	return true;
 }
 
 void Server::tick(float dt) {
-	handleNewConnections();
-	handleConnectionQueue();
-	handleIncomingData();
+	if (selector.wait()) {
+		if (selector.isReady(listenerSocket)) {
+			handleNewConnections();
+		}
+		else {
+			handleConnectionQueue();
+			handleIncomingData();
+		}
+	}
 }
 
 void Server::handleNewConnections() {
@@ -42,6 +49,7 @@ void Server::handleNewConnections() {
 	if (listenerSocket.accept(*client) == sf::Socket::Done) {
 		client->setBlocking(false);
 		connectionQueue.push_back(client);
+		selector.add(*client);
 		std::cout << "New attempt to connect from address: " << client->getRemoteAddress() << ":" << client->getRemotePort() << std::endl;
 	}
 	else {
@@ -51,55 +59,57 @@ void Server::handleNewConnections() {
 
 void Server::handleConnectionQueue() {
 	for (int i = 0; i < connectionQueue.size(); i++) {
-		sf::Packet packet;
-		sf::Socket::Status status = connectionQueue[i]->receive(packet);
-		switch (status) {
-		case sf::Socket::Disconnected:
-			delete connectionQueue[i];
-			connectionQueue.erase(connectionQueue.begin() + i);
-			i--;
-			break;
-		case sf::Socket::Error:
-			delete connectionQueue[i];
-			connectionQueue.erase(connectionQueue.begin() + i);
-			i--;
-			break;
-		case sf::Socket::Done:
-			std::string username;
-			packet >> username;
-			sf::Color colour;
-			packet >> colour;
-			sf::Packet returnPacket;
-			sf::TcpSocket* socket = connectionQueue[i];
-			if (isValidUsername(username)) {
-				bool exists = false;
-				for (int i = 0; i < usernames.size(); i++) {
-					if (username == usernames[i]) {
-						exists = true;
+		if (selector.isReady(*connectionQueue[i])) {
+			sf::Packet packet;
+			sf::Socket::Status status = connectionQueue[i]->receive(packet);
+			switch (status) {
+			case sf::Socket::Disconnected:
+				delete connectionQueue[i];
+				connectionQueue.erase(connectionQueue.begin() + i);
+				i--;
+				break;
+			case sf::Socket::Error:
+				delete connectionQueue[i];
+				connectionQueue.erase(connectionQueue.begin() + i);
+				i--;
+				break;
+			case sf::Socket::Done:
+				std::string username;
+				packet >> username;
+				sf::Color colour;
+				packet >> colour;
+				sf::Packet returnPacket;
+				sf::TcpSocket* socket = connectionQueue[i];
+				if (isValidUsername(username)) {
+					bool exists = false;
+					for (int i = 0; i < usernames.size(); i++) {
+						if (username == usernames[i]) {
+							exists = true;
+						}
+					}
+					if (!exists) {
+						players.push_back(std::pair<sf::TcpSocket*, std::string>(socket, username));
+						usernames.push_back(username);
+						PlayerData data;
+						data.name = username;
+						data.x = rand() % 1920;
+						data.y = rand() % 1080;
+						data.colour = colour;
+						playerData.push_back(data);
+						returnPacket << PacketType::USERNAMERESPONSE;
+						returnPacket << true;
+						returnPacket << data;
+						connectionQueue.erase(connectionQueue.begin() + i);
+						i--;
+						std::cout << "Player [" << username << "] joined the server!" << std::endl;
+						sf::Packet connectNotifyPacket;
+						connectNotifyPacket << PacketType::CONNECTNOTIFICATION;
+						connectNotifyPacket << data;
+						broadcastPacket(connectNotifyPacket, username);
 					}
 				}
-				if (!exists) {
-					players.push_back(std::pair<sf::TcpSocket*, std::string>(socket, username));
-					usernames.push_back(username);
-					PlayerData data;
-					data.name = username;
-					data.x = rand() % 1920;
-					data.y = rand() % 1080;
-					data.colour = colour;
-					playerData.push_back(data);
-					returnPacket << PacketType::USERNAMERESPONSE;
-					returnPacket << true;
-					returnPacket << data;
-					connectionQueue.erase(connectionQueue.begin() + i);
-					i--;
-					std::cout << "Player [" << username << "] joined the server!" << std::endl;
-					sf::Packet connectNotifyPacket;
-					connectNotifyPacket << PacketType::CONNECTNOTIFICATION;
-					connectNotifyPacket << data;
-					broadcastPacket(connectNotifyPacket, username);
-				}
+				socket->send(returnPacket);
 			}
-			socket->send(returnPacket);
 		}
 	}
 }
@@ -107,31 +117,33 @@ void Server::handleConnectionQueue() {
 void Server::handleIncomingData() {
 	sf::Socket::Status status;
 	for (int i = 0; i < players.size(); i++) {
-		do {
-			sf::TcpSocket* socket = players[i].first;
-			std::string username = players[i].second;
-			sf::Packet packet;
-			status = socket->receive(packet);
-			if (status == sf::Socket::Disconnected || status == sf::Socket::Error) {
-				closeConnection(username);
-				break;
-			}
-			if (status == sf::Socket::Done) {
-				PacketType type;
-				packet >> type;
-				switch (type) {
-				case PacketType::REQUEST:
-					handleRequest(packet, socket);
-					break;
-				case PacketType::MOVEMENTDATA:
-					handleMovementData(packet);
-					break;
-				case PacketType::CHATMESSAGE:
-					broadcastPacket(packet);
+		if (selector.isReady(*players[i].first)) {
+			do {
+				sf::TcpSocket* socket = players[i].first;
+				std::string username = players[i].second;
+				sf::Packet packet;
+				status = socket->receive(packet);
+				if (status == sf::Socket::Disconnected || status == sf::Socket::Error) {
+					closeConnection(username);
 					break;
 				}
-			}
-		} while (status == sf::Socket::Done);
+				if (status == sf::Socket::Done) {
+					PacketType type;
+					packet >> type;
+					switch (type) {
+					case PacketType::REQUEST:
+						handleRequest(packet, socket);
+						break;
+					case PacketType::MOVEMENTDATA:
+						handleMovementData(packet);
+						break;
+					case PacketType::CHATMESSAGE:
+						broadcastPacket(packet);
+						break;
+					}
+				}
+			} while (status == sf::Socket::Done);
+		}
 	}
 }
 
@@ -159,6 +171,7 @@ void Server::closeConnection(std::string username) {
 	}
 	for (int i = 0; i < players.size(); i++) {
 		if (players[i].second == username) {
+			selector.remove(*players[i].first);
 			players[i].first->disconnect();
 			players.erase(players.begin() + i);
 			break;
