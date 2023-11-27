@@ -1,1 +1,6 @@
-﻿  Networking Project.vcxproj -> C:\Users\admin\Source\Repos\CMP303-Networking-Project\x64\Debug\Networking Project.exe
+﻿  ChatWindow.cpp
+C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\ChatWindow.cpp(199,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Client.cpp
+C:\Users\harry\source\repos\CMP303-Networking-Project\Networking Project\Client.cpp(149,34): warning C4305: '=': truncation from 'double' to 'float'
+  Generating Code...
+  Networking Project.vcxproj -> C:\Users\harry\Source\Repos\CMP303-Networking-Project\x64\Debug\Networking Project.exe
