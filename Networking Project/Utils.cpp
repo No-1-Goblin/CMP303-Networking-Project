@@ -57,13 +57,13 @@ sf::Packet& operator >>(sf::Packet& Packet, sf::Color& colour)
 // Operator override for packing the MovementData struct
 sf::Packet& operator <<(sf::Packet& Packet, const MovementData& data)
 {
-    return Packet << data.name << data.x << data.y << data.moving;
+    return Packet << data.name << data.x << data.y << data.moving << data.id;
 }
 
 // Operator override for unpacking the MovementData struct
 sf::Packet& operator >>(sf::Packet& Packet, MovementData& data)
 {
-    return Packet >> data.name >> data.x >> data.y >> data.moving;
+    return Packet >> data.name >> data.x >> data.y >> data.moving >> data.id;
 }
 
 // Operator override for packing the ChatMessageData struct

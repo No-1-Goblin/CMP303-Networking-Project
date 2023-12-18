@@ -42,6 +42,7 @@ struct MovementData {
 	float x;
 	float y;
 	bool moving;
+	sf::Uint64 id;
 };
 
 sf::Packet& operator << (sf::Packet& Packet, const MovementData& p);

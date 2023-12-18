@@ -4,6 +4,8 @@ NetworkPlayer::NetworkPlayer() {
 	// Initialise variables
 	moving = false;
 	moveVec = sf::Vector2f(0, 0);
+	latest.id = 1;
+	prev.id = 1;
 }
 
 NetworkPlayer::~NetworkPlayer() {
@@ -20,6 +22,7 @@ void NetworkPlayer::init(sf::Texture* penguinBaseTex, sf::Texture* penguinColour
 	temp.x = playerData.x;
 	temp.y = playerData.y;
 	temp.moving = false;
+	temp.id = 0;
 	latest = temp;
 	setLatestData(temp);
 }
@@ -49,11 +52,13 @@ void NetworkPlayer::update(float dt) {
 
 // Set the latest movement data received about the player
 void NetworkPlayer::setLatestData(MovementData newData) {
-	prev = latest;
-	latest = newData;
-	moving = newData.moving;
-	// Get direction of travel
-	moveVec = sf::Vector2f(latest.x - data.x, latest.y - data.y);
-	float len = sqrt(pow(moveVec.x, 2) + pow(moveVec.y, 2));
-	moveVec *= (1 / len);
+	if (newData.id > latest.id) {
+		prev = latest;
+		latest = newData;
+		moving = newData.moving;
+		// Get direction of travel
+		moveVec = sf::Vector2f(latest.x - data.x, latest.y - data.y);
+		float len = sqrt(pow(moveVec.x, 2) + pow(moveVec.y, 2));
+		moveVec *= (1 / len);
+	}
 }

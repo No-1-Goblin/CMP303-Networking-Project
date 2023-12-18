@@ -36,7 +36,7 @@ protected:
 	sf::RenderWindow* window;
 	bool isFocused;
 	float movePacketCooldown = 0;
-
+	sf::Uint64 lastMoveID = 0;
 	std::vector<NetworkPlayer*> players;
 	sf::Texture penguinBaseTex;
 	sf::Texture penguinColourTex;

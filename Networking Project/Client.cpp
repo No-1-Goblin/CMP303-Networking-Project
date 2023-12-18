@@ -357,6 +357,7 @@ void Client::sendMovementPacket(bool moving) {
     data.x = playerPos.x;
     data.y = playerPos.y;
     data.moving = moving;
+    data.id = ++lastMoveID;
     // Pack packet
     packet << PacketType::MOVEMENTDATA;
     packet << data;
